@@ -1,19 +1,17 @@
 package com.mc.warehouse.WarehouseService.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
+@Table(name = "Items")
 @Entity
 public class ItemEntity {
     public ItemEntity() {}
 
-    public ItemEntity(@NotNull BigDecimal price, @NotNull String name, @NotNull Long amount) {
-        this.price = price;
+    public ItemEntity(@NotNull String name, @NotNull BigDecimal price, @NotNull Long amount) {
         this.name = name;
+        this.price = price;
         this.amount = amount;
     }
 
@@ -22,23 +20,31 @@ public class ItemEntity {
     private Long itemId;
 
     @NotNull
-    private BigDecimal price;
+    private String name;
 
     @NotNull
-    private String name;
+    private BigDecimal price;
 
     @NotNull
     private Long amount;
 
-    public BigDecimal getPrice() {
-        return price;
+    public Long getItemId() {
+        return itemId;
     }
 
     public String getName() {
         return name;
     }
 
+    public BigDecimal getPrice() {
+        return price;
+    }
+
     public Long getAmount() {
         return amount;
+    }
+
+    public void setAmount(Long amount) {
+        this.amount = amount;
     }
 }
