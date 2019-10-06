@@ -23,7 +23,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
-    public List<ItemDto> getAll() {
+    public List<ItemDto> getItems() {
         List<ItemDto> items = new ArrayList<>();
         itemRepository.findAll().forEach(itemEntity -> {
             items.add(convertToDto(itemEntity));
@@ -33,14 +33,14 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
-    public ItemDto getOne(Long id) {
+    public ItemDto getItemById(Long id) {
         ItemEntity itemEntity = itemRepository.findById(id).get();
         logger.info("Returned item with id {}", itemEntity.getItemId());
         return convertToDto(itemEntity);
     }
 
     @Override
-    public ItemDto create(ItemCreationDto itemCreationDto) {
+    public ItemDto createItem(ItemCreationDto itemCreationDto) {
         ItemEntity itemEntity = itemRepository.save(new ItemEntity(
                 itemCreationDto.getName(),
                 itemCreationDto.getPrice(),
@@ -51,7 +51,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
-    public ItemDto updateAmount(Long id, Long amount) {
+    public ItemDto updateItemsAmount(Long id, Long amount) {
         ItemEntity itemEntity = itemRepository.findById(id).get();
         itemEntity.setAmount(itemEntity.getAmount() + amount);
         logger.info("Amount of item with id {} was changed to {}", itemEntity.getItemId(), itemEntity.getAmount());

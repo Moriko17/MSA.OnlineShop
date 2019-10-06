@@ -6,8 +6,8 @@ import com.mc.warehouse.WarehouseService.DataObjects.ItemDto;
 import java.util.List;
 
 public interface WarehouseService {
-    List<ItemDto> getAll();
-    ItemDto getOne(Long id);
-    ItemDto create(ItemCreationDto itemCreationDto);
-    ItemDto updateAmount(Long id, Long amount);
+    List<ItemDto> getItems();
+    ItemDto getItemById(Long id);
+    ItemDto createItem(ItemCreationDto itemCreationDto);
+    ItemDto updateItemsAmount(Long id, Long amount);
 }

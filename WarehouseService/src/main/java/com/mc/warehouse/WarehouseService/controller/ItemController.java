@@ -18,21 +18,21 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDto> getAll() {
-        return warehouseService.getAll();
+        return warehouseService.getItems();
     }
 
     @GetMapping("/{id}")
     public ItemDto getOne(@PathVariable Long id) {
-        return warehouseService.getOne(id);
+        return warehouseService.getItemById(id);
     }
 
     @PostMapping
     public ItemDto create(@RequestBody ItemCreationDto itemCreationDto) {
-        return warehouseService.create(itemCreationDto);
+        return warehouseService.createItem(itemCreationDto);
     }
 
     @PutMapping("/{id}/upd/{amount}")
     public ItemDto updateAmount(@PathVariable Long id, @PathVariable Long amount) {
-        return warehouseService.updateAmount(id, amount);
+        return warehouseService.updateItemsAmount(id, amount);
     }
 }
