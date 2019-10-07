@@ -1,15 +1,20 @@
 package com.mc.warehouse.WarehouseService.domain;
 
+import lombok.*;
+
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Table(name = "Items")
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 public class ItemEntity {
-    public ItemEntity() {}
-
-    public ItemEntity(@NotNull String name, @NotNull BigDecimal price, @NotNull Long amount) {
+    public ItemEntity(@NotNull @NotBlank String name, @DecimalMin(value = "0.01") BigDecimal price, @NotNull Long amount) {
         this.name = name;
         this.price = price;
         this.amount = amount;
@@ -17,34 +22,16 @@ public class ItemEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long itemId;
 
     @NotNull
+    @NotBlank
     private String name;
 
-    @NotNull
+    @DecimalMin(value = "0.01")
     private BigDecimal price;
 
     @NotNull
     private Long amount;
-
-    public Long getItemId() {
-        return itemId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public Long getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Long amount) {
-        this.amount = amount;
-    }
 }
