@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api2/warehouse/items")
+@RequestMapping("/warehouse/items")
 public class ItemController {
     private WarehouseService warehouseService;
     @Autowired
@@ -17,22 +17,22 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getAll() {
+    public List<ItemDto> getItems() {
         return warehouseService.getItems();
     }
 
     @GetMapping("/{id}")
-    public ItemDto getOne(@PathVariable Long id) {
+    public ItemDto getItemById(@PathVariable Long id) {
         return warehouseService.getItemById(id);
     }
 
     @PostMapping
-    public ItemDto create(@RequestBody ItemCreationDto itemCreationDto) {
+    public ItemDto createItem(@RequestBody ItemCreationDto itemCreationDto) {
         return warehouseService.createItem(itemCreationDto);
     }
 
-    @PutMapping("/{id}/upd/{amount}")
-    public ItemDto updateAmount(@PathVariable Long id, @PathVariable Long amount) {
-        return warehouseService.updateItemsAmount(id, amount);
+    @PutMapping("/{id}/upd/{delta}")
+    public ItemDto updateItemsAmountById(@PathVariable Long id, @PathVariable Long delta) {
+        return warehouseService.updateItemsAmountById(id, delta);
     }
 }

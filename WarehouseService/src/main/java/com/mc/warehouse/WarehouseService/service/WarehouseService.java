@@ -9,5 +9,5 @@ public interface WarehouseService {
     List<ItemDto> getItems();
     ItemDto getItemById(Long id);
     ItemDto createItem(ItemCreationDto itemCreationDto);
-    ItemDto updateItemsAmount(Long id, Long amount);
+    ItemDto updateItemsAmountById(Long id, Long amount);
 }

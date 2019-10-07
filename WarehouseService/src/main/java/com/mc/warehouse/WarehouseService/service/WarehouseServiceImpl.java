@@ -25,18 +25,18 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Override
     public List<ItemDto> getItems() {
         List<ItemDto> items = new ArrayList<>();
-        itemRepository.findAll().forEach(itemEntity -> {
-            items.add(convertToDto(itemEntity));
-        });
-        logger.info("Return all items collection");
+        itemRepository.findAll().forEach(itemEntity -> items.add(convertItemEntityToItemDto(itemEntity)));
+        logger.info("Returned collection with {} items", items.size());
+
         return items;
     }
 
     @Override
     public ItemDto getItemById(Long id) {
-        ItemEntity itemEntity = itemRepository.findById(id).get();
+        ItemEntity itemEntity = itemRepository.findById(id).orElseThrow(RuntimeException::new);
         logger.info("Returned item with id {}", itemEntity.getItemId());
-        return convertToDto(itemEntity);
+
+        return convertItemEntityToItemDto(itemEntity);
     }
 
     @Override
@@ -47,18 +47,20 @@ public class WarehouseServiceImpl implements WarehouseService {
                 itemCreationDto.getAmount()
         ));
         logger.info("Item with id {} was created", itemEntity.getItemId());
-        return convertToDto(itemEntity);
+
+        return convertItemEntityToItemDto(itemEntity);
     }
 
     @Override
-    public ItemDto updateItemsAmount(Long id, Long amount) {
-        ItemEntity itemEntity = itemRepository.findById(id).get();
+    public ItemDto updateItemsAmountById(Long id, Long amount) {
+        ItemEntity itemEntity = itemRepository.findById(id).orElseThrow(RuntimeException::new);
         itemEntity.setAmount(itemEntity.getAmount() + amount);
         logger.info("Amount of item with id {} was changed to {}", itemEntity.getItemId(), itemEntity.getAmount());
-        return convertToDto(itemRepository.save(itemEntity));
+
+        return convertItemEntityToItemDto(itemRepository.save(itemEntity));
     }
 
-    private ItemDto convertToDto(ItemEntity itemEntity) {
+    private ItemDto convertItemEntityToItemDto(ItemEntity itemEntity) {
         return new ItemDto(
                 itemEntity.getItemId(),
                 itemEntity.getName(),
