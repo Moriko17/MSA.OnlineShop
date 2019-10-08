@@ -1,16 +1,18 @@
 package com.mc.order.OrderService.domain;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Entity
+@Getter
+@NoArgsConstructor
 @Table(name = "ItemAddition")
 public class ItemAdditionEntity {
-
-    public ItemAdditionEntity() {}
-
-    public ItemAdditionEntity(@NotNull Long itemId, @NotNull Integer amount, @NotNull String userName) {
+    public ItemAdditionEntity(@NotNull Long itemId, @NotNull Integer amount, @NotNull @NotBlank String userName) {
         this.itemId = itemId;
         this.amount = amount;
         this.userName = userName;
@@ -27,21 +29,6 @@ public class ItemAdditionEntity {
     private Integer amount;
 
     @NotNull
+    @NotBlank
     private String userName;
-
-    public Long getId() {
-        return id;
-    }
-
-    public Long getItemId() {
-        return itemId;
-    }
-
-    public Integer getAmount() {
-        return amount;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
 }

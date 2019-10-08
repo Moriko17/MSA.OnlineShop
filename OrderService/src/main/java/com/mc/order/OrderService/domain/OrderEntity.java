@@ -1,18 +1,27 @@
 package com.mc.order.OrderService.domain;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
+@NoArgsConstructor
+@Getter
+@Setter
 @Table(name = "Orders")
 public class OrderEntity {
-
-    public OrderEntity() {};
-
-    public OrderEntity(@NotNull String status, @NotNull BigDecimal totalCost, @NotNull Integer totalAmount, @NotNull String userName, @NotNull List<ItemAdditionEntity> items) {
+    public OrderEntity(@NotNull OrdersStatus status,
+                       @NotNull BigDecimal totalCost,
+                       @NotNull Integer totalAmount,
+                       @NotNull @NotBlank String userName,
+                       @NotNull List<ItemAdditionEntity> items) {
         this.status = status;
         this.totalCost = totalCost;
         this.totalAmount = totalAmount;
@@ -22,10 +31,12 @@ public class OrderEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long orderId;
 
     @NotNull
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrdersStatus status;
 
     @NotNull
     private BigDecimal totalCost;
@@ -34,6 +45,7 @@ public class OrderEntity {
     private Integer totalAmount;
 
     @NotNull
+    @NotBlank
     private String userName;
 
     @NotNull
@@ -42,49 +54,5 @@ public class OrderEntity {
 
     public void addToList(ItemAdditionEntity itemAdditionEntity) {
         items.add(itemAdditionEntity);
-    }
-
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public BigDecimal getTotalCost() {
-        return totalCost;
-    }
-
-    public Integer getTotalAmount() {
-        return totalAmount;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public List<ItemAdditionEntity> getItems() {
-        return items;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public void setTotalCost(BigDecimal totalCost) {
-        this.totalCost = totalCost;
-    }
-
-    public void setTotalAmount(Integer totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setItems(List<ItemAdditionEntity> items) {
-        this.items = items;
     }
 }

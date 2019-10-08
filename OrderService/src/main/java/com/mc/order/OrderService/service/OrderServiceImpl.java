@@ -6,12 +6,12 @@ import com.mc.order.OrderService.dataObjects.OrderDto;
 import com.mc.order.OrderService.dataObjects.UserDetailsDto;
 import com.mc.order.OrderService.domain.ItemAdditionEntity;
 import com.mc.order.OrderService.domain.OrderEntity;
+import com.mc.order.OrderService.domain.OrdersStatus;
 import com.mc.order.OrderService.repository.ItemsRepository;
 import com.mc.order.OrderService.repository.OrdersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -30,93 +30,108 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDto> getAll() {
+    public List<OrderDto> getOrders() {
         List<OrderDto> orders = new ArrayList<>();
-        ordersRepository.findAll().forEach(orderEntity -> {
-            orders.add(convertToOrderDto(orderEntity));
-        });
-        logger.info("Returns orders collection");
+        ordersRepository.findAll().forEach(orderEntity -> orders.add(convertOrderEntityToOrderDto(orderEntity)));
+        logger.info("Returns collection with {} orders", orders.size());
 
         return orders;
     }
 
     @Override
-    public OrderDto getOne(Long id) {
-        OrderEntity orderEntity = ordersRepository.findById(id).get();
+    public OrderDto getOrderById(Long id) {
+        OrderEntity orderEntity = ordersRepository.findById(id).orElseThrow(RuntimeException::new);
         logger.info("Returns order with id {}", id);
 
-        return convertToOrderDto(orderEntity);
+        return convertOrderEntityToOrderDto(orderEntity);
     }
 
     @Override
-    public OrderDto addToOrder(@Nullable Long id, ItemDto itemDto) {
+    public OrderDto addItemToOrder(String id, ItemDto itemDto) {
         OrderEntity orderEntity;
-        if (id == null) {
-            orderEntity = new OrderEntity(
-                    "Collecting",
-                    new BigDecimal(0),
-                    0,
-                    itemDto.getUserName(),
-                    new ArrayList<ItemAdditionEntity>());
+        if (id.toLowerCase().equals("null")) {
+            orderEntity = createOrder(itemDto.getUserName());
             logger.info("New order with id {} was created", orderEntity.getOrderId());
         } else {
-            orderEntity = ordersRepository.findById(id).get();
+            Long parsedId = Long.parseLong(id);
+            orderEntity = ordersRepository.findById(parsedId).orElseThrow(RuntimeException::new);
         }
 
-        ItemAdditionEntity itemAdditionEntity = convertToItemAdditionEntity(itemDto);
+        //todo check does warehouse have enough items to add
+
+        ItemAdditionEntity itemAdditionEntity = convertItemDtoToItemAdditionEntity(itemDto);
         itemsRepository.save(itemAdditionEntity);
 
         orderEntity.addToList(itemAdditionEntity);
-
         orderEntity.setTotalAmount(orderEntity.getTotalAmount() + itemDto.getAmount());
-        //todo need to chat with Item service to get item's price by itemId
-        //orderEntity.setTotalCost(orderEntity.getTotalCost() + );
+        //todo updating total cost
+        //todo updating warehouse's amount
 
-        logger.info("New item was added to order with id {}", orderEntity.getOrderId());
+        logger.info("Item with id {} was added to order with id {}",
+                itemAdditionEntity.getItemId(),
+                orderEntity.getOrderId());
 
-        return convertToOrderDto(ordersRepository.save(orderEntity));
+        return convertOrderEntityToOrderDto(ordersRepository.save(orderEntity));
     }
 
     @Override
-    public OrderDto changeStatus(Long id, String status) {
-        OrderEntity orderEntity = ordersRepository.findById(id).get();
+    public OrderDto changeOrdersStatus(Long id, OrdersStatus status) {
+        OrderEntity orderEntity = ordersRepository.findById(id).orElseThrow(RuntimeException::new);
         orderEntity.setStatus(status);
         logger.info("Order status was changed to {}", status);
+        //todo updating warehouse's amount in case of rejection
 
-        return convertToOrderDto(ordersRepository.save(orderEntity));
+        return convertOrderEntityToOrderDto(ordersRepository.save(orderEntity));
     }
 
     @Override
-    public OfferDto preparePayment(Long id, UserDetailsDto userDetailsDto) {
-        //TODO return something else if card not auth.
-        logger.info("Offer obj for order with id {} was created", id);
-        return new OfferDto(userDetailsDto.getUserName(), id);
+    public OrderDto checkoutOrder(Long id, UserDetailsDto userDetailsDto) {
+        switch (userDetailsDto.getCardAuthorizationInfo()) {
+            case UNAUTHORIZED:
+                changeOrdersStatus(id, OrdersStatus.FAILED);
+                logger.info("Payment for order with id {} was rejected", id);
+                break;
+            case AUTHORIZED:
+                changeOrdersStatus(id, OrdersStatus.PAID);
+                logger.info("Payment for order with id {} was performed", id);
+                OfferDto offerDto = new OfferDto(userDetailsDto.getUserName(), id);
+                //todo save {offerDto} to payment service
+                break;
+        }
+
+        return convertOrderEntityToOrderDto(ordersRepository.findById(id).orElseThrow(RuntimeException::new));
     }
 
-    private OrderDto convertToOrderDto(OrderEntity orderEntity) {
+    private OrderEntity createOrder(String userName) {
+        return new OrderEntity(OrdersStatus.COLLECTING,
+                new BigDecimal(0),
+                0,
+                userName,
+                new ArrayList<>());
+    }
+
+    private OrderDto convertOrderEntityToOrderDto(OrderEntity orderEntity) {
         return new OrderDto(
                 orderEntity.getOrderId(),
                 orderEntity.getStatus(),
                 orderEntity.getTotalCost(),
                 orderEntity.getTotalAmount(),
                 orderEntity.getUserName(),
-                convertToItemsDto(orderEntity.getItems())
+                convertItemAdditionEntityToItemsDto(orderEntity.getItems())
         );
     }
 
-    private List<ItemDto> convertToItemsDto(List<ItemAdditionEntity> itemAdditionEntities) {
+    private List<ItemDto> convertItemAdditionEntityToItemsDto(List<ItemAdditionEntity> itemAdditionEntities) {
         List<ItemDto> items = new ArrayList<>();
-        itemAdditionEntities.forEach(itemAdditionEntity -> {
-            items.add(new ItemDto(
-                    itemAdditionEntity.getItemId(),
-                    itemAdditionEntity.getAmount(),
-                    itemAdditionEntity.getUserName()
-            ));
-        });
+        itemAdditionEntities.forEach(itemAdditionEntity -> items.add(new ItemDto(
+                itemAdditionEntity.getItemId(),
+                itemAdditionEntity.getAmount(),
+                itemAdditionEntity.getUserName()
+        )));
         return items;
     }
 
-    private ItemAdditionEntity convertToItemAdditionEntity(ItemDto itemDto) {
+    private ItemAdditionEntity convertItemDtoToItemAdditionEntity(ItemDto itemDto) {
         return new ItemAdditionEntity(
                 itemDto.getItemId(),
                 itemDto.getAmount(),
