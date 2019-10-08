@@ -1,9 +1,7 @@
 package com.mc.order.OrderService.service;
 
 import com.mc.order.OrderService.dataObjects.ItemDto;
-import com.mc.order.OrderService.dataObjects.OfferDto;
 import com.mc.order.OrderService.dataObjects.OrderDto;
-import com.mc.order.OrderService.dataObjects.UserDetailsDto;
 import com.mc.order.OrderService.domain.ItemAdditionEntity;
 import com.mc.order.OrderService.domain.OrderEntity;
 import com.mc.order.OrderService.domain.OrdersStatus;
@@ -82,24 +80,6 @@ public class OrderServiceImpl implements OrderService {
         //todo updating warehouse's amount in case of rejection
 
         return convertOrderEntityToOrderDto(ordersRepository.save(orderEntity));
-    }
-
-    @Override
-    public OrderDto checkoutOrder(Long id, UserDetailsDto userDetailsDto) {
-        switch (userDetailsDto.getCardAuthorizationInfo()) {
-            case UNAUTHORIZED:
-                changeOrdersStatus(id, OrdersStatus.FAILED);
-                logger.info("Payment for order with id {} was rejected", id);
-                break;
-            case AUTHORIZED:
-                changeOrdersStatus(id, OrdersStatus.PAID);
-                logger.info("Payment for order with id {} was performed", id);
-                OfferDto offerDto = new OfferDto(userDetailsDto.getUserName(), id);
-                //todo save {offerDto} to payment service
-                break;
-        }
-
-        return convertOrderEntityToOrderDto(ordersRepository.findById(id).orElseThrow(RuntimeException::new));
     }
 
     private OrderEntity createOrder(String userName) {
