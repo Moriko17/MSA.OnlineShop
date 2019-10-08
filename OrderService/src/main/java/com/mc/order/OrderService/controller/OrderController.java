@@ -1,10 +1,9 @@
 package com.mc.order.OrderService.controller;
 
-
 import com.mc.order.OrderService.dataObjects.ItemDto;
-import com.mc.order.OrderService.dataObjects.OfferDto;
 import com.mc.order.OrderService.dataObjects.OrderDto;
 import com.mc.order.OrderService.dataObjects.UserDetailsDto;
+import com.mc.order.OrderService.domain.OrdersStatus;
 import com.mc.order.OrderService.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api2/orders")
+@RequestMapping("/orders")
 public class OrderController {
-
     private OrderService orderService;
     @Autowired
     public OrderController(OrderService orderService) {
@@ -22,32 +20,27 @@ public class OrderController {
     }
 
     @GetMapping
-    public List<OrderDto> getAll() {
-        return orderService.getAll();
+    public List<OrderDto> getOrders() {
+        return orderService.getOrders();
     }
 
     @GetMapping("/{id}")
-    public OrderDto getOne(Long id) {
-        return orderService.getOne(id);
+    public OrderDto getOrderById(@PathVariable Long id) {
+        return orderService.getOrderById(id);
     }
 
     @PostMapping("/{id}/add")
-    public OrderDto addToOrder(@PathVariable Long id, @RequestBody ItemDto itemDto) {
-        return orderService.addToOrder(id, itemDto);
-    }
-
-    @PostMapping("//add")
-    public OrderDto addToOrder(@RequestBody ItemDto itemDto) {
-        return orderService.addToOrder(null, itemDto);
+    public OrderDto addItemToOrder(@PathVariable String id, @RequestBody ItemDto itemDto) {
+        return orderService.addItemToOrder(id, itemDto);
     }
 
     @PutMapping("/{id}/status/{status}")
-    public OrderDto changeStatus(@PathVariable Long id, @PathVariable String status) {
-        return orderService.changeStatus(id, status);
+    public OrderDto changeOrdersStatus(@PathVariable Long id, @PathVariable OrdersStatus status) {
+        return orderService.changeOrdersStatus(id, status);
     }
 
-    @PutMapping("/{id}/pay")
-    public OfferDto preparePayment(@PathVariable Long id, @RequestBody UserDetailsDto userDetailsDto) {
-        return orderService.preparePayment(id, userDetailsDto);
+    @PutMapping("/{id}/checkout")
+    public OrderDto checkoutOrder(@PathVariable Long id, @RequestBody UserDetailsDto userDetailsDto) {
+        return orderService.checkoutOrder(id, userDetailsDto);
     }
 }
