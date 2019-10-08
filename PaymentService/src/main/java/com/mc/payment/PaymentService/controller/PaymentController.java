@@ -1,17 +1,15 @@
 package com.mc.payment.PaymentService.controller;
 
-
-import com.mc.payment.PaymentService.dataObjects.OfferDto;
-import com.mc.payment.PaymentService.domain.TransactionEntity;
+import com.mc.payment.PaymentService.dataObjects.TransactionDto;
+import com.mc.payment.PaymentService.dataObjects.UserDetailsDto;
 import com.mc.payment.PaymentService.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/api2/payment")
+@RequestMapping("/payment")
 public class PaymentController {
     private PaymentService paymentService;
     @Autowired
@@ -19,13 +17,19 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
-    @PutMapping("/{transactionId}/status/{status}")
-    public TransactionEntity changeStatus(@PathVariable Long transactionId, @PathVariable String status) {
-        return paymentService.changeStatus(transactionId, status);
+    @GetMapping
+    public List<TransactionDto> getTransactions() {
+        return paymentService.getTransactions();
     }
 
-    @PutMapping("/pay")
-    public TransactionEntity performPayment(OfferDto offerDto) {
-        return paymentService.performPayment(offerDto);
+    @GetMapping("/{id}")
+    public TransactionDto getTransactionById(@PathVariable Long id) {
+        return paymentService.getTransactionById(id);
+    }
+
+
+    @PutMapping("/pay/{orderId}")
+    public TransactionDto performPayment(@PathVariable Long orderId, @RequestBody UserDetailsDto userDetailsDto) {
+        return paymentService.performPayment(orderId, userDetailsDto);
     }
 }
