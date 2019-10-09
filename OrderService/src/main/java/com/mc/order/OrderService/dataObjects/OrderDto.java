@@ -1,6 +1,6 @@
 package com.mc.order.OrderService.dataObjects;
 
-import com.mc.order.OrderService.domain.OrdersStatus;
+import com.mc.order.OrderService.domain.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderDto {
     private Long id;
-    private OrdersStatus status;
+    private OrderStatus status;
     private BigDecimal totalCost;
     private Integer totalAmount;
     private String userName;

@@ -17,7 +17,7 @@ import java.util.List;
 @Setter
 @Table(name = "Orders")
 public class OrderEntity {
-    public OrderEntity(@NotNull OrdersStatus status,
+    public OrderEntity(@NotNull OrderStatus status,
                        @NotNull BigDecimal totalCost,
                        @NotNull Integer totalAmount,
                        @NotNull @NotBlank String userName,
@@ -36,7 +36,7 @@ public class OrderEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private OrdersStatus status;
+    private OrderStatus status;
 
     @NotNull
     private BigDecimal totalCost;

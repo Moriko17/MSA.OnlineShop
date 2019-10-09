@@ -1,6 +1,6 @@
 package com.mc.order.OrderService.domain;
 
-public enum OrdersStatus {
+public enum OrderStatus {
     COLLECTING,
     PAID,
     COMPLETE,

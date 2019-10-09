@@ -32,7 +32,7 @@ public class ItemController {
     }
 
     @PutMapping("/{id}/upd/{delta}")
-    public ItemDto updateItemsAmountById(@PathVariable Long id, @PathVariable Long delta) {
-        return warehouseService.updateItemsAmountById(id, delta);
+    public ItemDto updateItemAmountById(@PathVariable Long id, @PathVariable Long delta) {
+        return warehouseService.updateItemAmountById(id, delta);
     }
 }

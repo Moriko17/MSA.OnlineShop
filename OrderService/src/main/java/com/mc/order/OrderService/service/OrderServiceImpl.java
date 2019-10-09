@@ -4,7 +4,7 @@ import com.mc.order.OrderService.dataObjects.ItemDto;
 import com.mc.order.OrderService.dataObjects.OrderDto;
 import com.mc.order.OrderService.domain.ItemAdditionEntity;
 import com.mc.order.OrderService.domain.OrderEntity;
-import com.mc.order.OrderService.domain.OrdersStatus;
+import com.mc.order.OrderService.domain.OrderStatus;
 import com.mc.order.OrderService.repository.ItemsRepository;
 import com.mc.order.OrderService.repository.OrdersRepository;
 import org.slf4j.Logger;
@@ -73,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDto changeOrdersStatus(Long id, OrdersStatus status) {
+    public OrderDto changeOrderStatus(Long id, OrderStatus status) {
         OrderEntity orderEntity = ordersRepository.findById(id).orElseThrow(RuntimeException::new);
         orderEntity.setStatus(status);
         logger.info("Order status was changed to {}", status);
@@ -83,7 +83,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private OrderEntity createOrder(String userName) {
-        return new OrderEntity(OrdersStatus.COLLECTING,
+        return new OrderEntity(OrderStatus.COLLECTING,
                 new BigDecimal(0),
                 0,
                 userName,
