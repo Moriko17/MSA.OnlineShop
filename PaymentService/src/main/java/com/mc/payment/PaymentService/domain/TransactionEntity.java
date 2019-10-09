@@ -30,6 +30,7 @@ public class TransactionEntity {
     private Long id;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private TransactionStatus status;
 
     @NotNull

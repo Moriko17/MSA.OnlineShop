@@ -2,7 +2,7 @@ package com.mc.order.OrderService.controller;
 
 import com.mc.order.OrderService.dataObjects.ItemDto;
 import com.mc.order.OrderService.dataObjects.OrderDto;
-import com.mc.order.OrderService.domain.OrdersStatus;
+import com.mc.order.OrderService.domain.OrderStatus;
 import com.mc.order.OrderService.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +34,7 @@ public class OrderController {
     }
 
     @PutMapping("/{id}/status/{status}")
-    public OrderDto changeOrdersStatus(@PathVariable Long id, @PathVariable OrdersStatus status) {
-        return orderService.changeOrdersStatus(id, status);
+    public OrderDto changeOrderStatus(@PathVariable Long id, @PathVariable OrderStatus status) {
+        return orderService.changeOrderStatus(id, status);
     }
 }

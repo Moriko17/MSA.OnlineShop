@@ -52,7 +52,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
-    public ItemDto updateItemsAmountById(Long id, Long amount) {
+    public ItemDto updateItemAmountById(Long id, Long amount) {
         ItemEntity itemEntity = itemRepository.findById(id).orElseThrow(RuntimeException::new);
         itemEntity.setAmount(itemEntity.getAmount() + amount);
         logger.info("Amount of item with id {} was changed to {}", itemEntity.getItemId(), itemEntity.getAmount());
