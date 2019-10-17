@@ -27,7 +27,6 @@ public class PaymentController {
         return paymentService.getTransactionById(id);
     }
 
-
     @PutMapping("/pay/{orderId}")
     public TransactionDto performPayment(@PathVariable Long orderId, @RequestBody UserDetailsDto userDetailsDto) {
         return paymentService.performPayment(orderId, userDetailsDto);
