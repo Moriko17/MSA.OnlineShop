@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/warehouse/items")
+@RequestMapping("/items")
 public class ItemController {
     private WarehouseService warehouseService;
     @Autowired
@@ -31,7 +31,7 @@ public class ItemController {
         return warehouseService.createItem(itemCreationDto);
     }
 
-    @PutMapping("/{id}/upd/{delta}")
+    @PutMapping("/{id}/addition/{delta}")
     public ItemDto updateItemAmountById(@PathVariable Long id, @PathVariable Long delta) {
         return warehouseService.updateItemAmountById(id, delta);
     }
