@@ -1,5 +1,6 @@
 package com.mc.order.OrderService.service;
 
+import com.mc.order.OrderService.dataObjects.FilledItemDto;
 import com.mc.order.OrderService.dataObjects.ItemDto;
 import com.mc.order.OrderService.dataObjects.OrderDto;
 import com.mc.order.OrderService.domain.ItemAdditionEntity;
@@ -10,11 +11,15 @@ import com.mc.order.OrderService.repository.OrdersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -55,19 +60,43 @@ public class OrderServiceImpl implements OrderService {
             orderEntity = ordersRepository.findById(parsedId).orElseThrow(RuntimeException::new);
         }
 
-        //todo check does warehouse have enough items to add
+        RestTemplate restTemplate = new RestTemplate();
+        String fooResourceUrl
+                = "http://localhost:8081/items/";
+        ResponseEntity<FilledItemDto> response
+                = restTemplate.getForEntity(fooResourceUrl + itemDto.getItemId(), FilledItemDto.class);
+//        logger.info(Objects.requireNonNull(response.getBody()).getName());
+        FilledItemDto filledItemDto = response.getBody();
 
-        ItemAdditionEntity itemAdditionEntity = convertItemDtoToItemAdditionEntity(itemDto);
-        itemsRepository.save(itemAdditionEntity);
+        assert filledItemDto != null;
+        if(filledItemDto.getAmount() >= itemDto.getAmount()) {
+            ItemAdditionEntity itemAdditionEntity = convertItemDtoToItemAdditionEntity(itemDto);
+            itemsRepository.save(itemAdditionEntity);
 
-        orderEntity.addToList(itemAdditionEntity);
-        orderEntity.setTotalAmount(orderEntity.getTotalAmount() + itemDto.getAmount());
-        //todo updating total cost
-        //todo updating warehouse's amount
+            orderEntity.addToList(itemAdditionEntity);
+            orderEntity.setTotalAmount(orderEntity.getTotalAmount() + itemDto.getAmount());
+            //todo updating total cost
+            orderEntity.setTotalCost(orderEntity.getTotalCost().add(filledItemDto.getPrice()));
+            //todo updating warehouse's amount
 
-        logger.info("Item with id {} was added to order with id {}",
-                itemAdditionEntity.getItemId(),
-                orderEntity.getOrderId());
+            logger.info("Item with id {} was added to order with id {}",
+                    itemAdditionEntity.getItemId(),
+                    orderEntity.getOrderId());
+        } else logger.info("Not enough items: {}", filledItemDto.getName());
+
+
+
+//        ItemAdditionEntity itemAdditionEntity = convertItemDtoToItemAdditionEntity(itemDto);
+//        itemsRepository.save(itemAdditionEntity);
+//
+//        orderEntity.addToList(itemAdditionEntity);
+//        orderEntity.setTotalAmount(orderEntity.getTotalAmount() + itemDto.getAmount());
+//        //todo updating total cost
+//        //todo updating warehouse's amount
+//
+//        logger.info("Item with id {} was added to order with id {}",
+//                itemAdditionEntity.getItemId(),
+//                orderEntity.getOrderId());
 
         return convertOrderEntityToOrderDto(ordersRepository.save(orderEntity));
     }
