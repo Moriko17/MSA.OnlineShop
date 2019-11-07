@@ -1,5 +1,6 @@
 package com.mc.order.OrderService.service;
 
+import com.mc.order.OrderService.dataObjects.DeltaDto;
 import com.mc.order.OrderService.dataObjects.FilledItemDto;
 import com.mc.order.OrderService.dataObjects.ItemDto;
 import com.mc.order.OrderService.dataObjects.OrderDto;
@@ -10,6 +11,7 @@ import com.mc.order.OrderService.repository.ItemsRepository;
 import com.mc.order.OrderService.repository.OrdersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,9 @@ public class OrderServiceImpl implements OrderService {
         this.ordersRepository = ordersRepository;
         this.itemsRepository = itemsRepository;
     }
+
+    @Autowired
+    AmqpTemplate template;
 
     @Override
     public List<OrderDto> getOrders() {
@@ -65,7 +70,6 @@ public class OrderServiceImpl implements OrderService {
                 = "http://localhost:8081/items/";
         ResponseEntity<FilledItemDto> response
                 = restTemplate.getForEntity(fooResourceUrl + itemDto.getItemId(), FilledItemDto.class);
-//        logger.info(Objects.requireNonNull(response.getBody()).getName());
         FilledItemDto filledItemDto = response.getBody();
 
         assert filledItemDto != null;
@@ -75,28 +79,15 @@ public class OrderServiceImpl implements OrderService {
 
             orderEntity.addToList(itemAdditionEntity);
             orderEntity.setTotalAmount(orderEntity.getTotalAmount() + itemDto.getAmount());
-            //todo updating total cost
             orderEntity.setTotalCost(orderEntity.getTotalCost().add(filledItemDto.getPrice()));
-            //todo updating warehouse's amount
+
+            logger.info("Sending message");
+            template.convertAndSend("queue1", ""+itemDto.getItemId()+":-"+itemDto.getAmount());
 
             logger.info("Item with id {} was added to order with id {}",
                     itemAdditionEntity.getItemId(),
                     orderEntity.getOrderId());
         } else logger.info("Not enough items: {}", filledItemDto.getName());
-
-
-
-//        ItemAdditionEntity itemAdditionEntity = convertItemDtoToItemAdditionEntity(itemDto);
-//        itemsRepository.save(itemAdditionEntity);
-//
-//        orderEntity.addToList(itemAdditionEntity);
-//        orderEntity.setTotalAmount(orderEntity.getTotalAmount() + itemDto.getAmount());
-//        //todo updating total cost
-//        //todo updating warehouse's amount
-//
-//        logger.info("Item with id {} was added to order with id {}",
-//                itemAdditionEntity.getItemId(),
-//                orderEntity.getOrderId());
 
         return convertOrderEntityToOrderDto(ordersRepository.save(orderEntity));
     }
