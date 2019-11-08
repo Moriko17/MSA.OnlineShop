@@ -55,7 +55,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     public ItemDto updateItemAmountById(Long id, Long amount) {
         ItemEntity itemEntity = itemRepository.findById(id).orElseThrow(RuntimeException::new);
         itemEntity.setAmount(itemEntity.getAmount() + amount);
-        logger.info("Amount of item with id {} was changed to {}", itemEntity.getItemId(), itemEntity.getAmount());
+        logger.info("Amount of item with id {} was changed to {} ({})", itemEntity.getItemId(), itemEntity.getAmount(), amount);
 
         return convertItemEntityToItemDto(itemRepository.save(itemEntity));
     }

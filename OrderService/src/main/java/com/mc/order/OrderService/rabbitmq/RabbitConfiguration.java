@@ -12,9 +12,7 @@ public class RabbitConfiguration {
 
     @Bean
     public ConnectionFactory connectionFactory() {
-        CachingConnectionFactory connectionFactory =
-                new CachingConnectionFactory("localhost");
-        return connectionFactory;
+        return new CachingConnectionFactory("localhost");
     }
 
     @Bean
@@ -27,9 +25,8 @@ public class RabbitConfiguration {
         return new RabbitTemplate(connectionFactory());
     }
 
-    //объявляем очередь с именем queue1
     @Bean
-    public Queue myQueue1() {
-        return new Queue("queue1");
+    public Queue warehouseQueue() {
+        return new Queue("warehouseQueue");
     }
 }

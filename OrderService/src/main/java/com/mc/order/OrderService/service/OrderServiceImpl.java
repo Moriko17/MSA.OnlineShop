@@ -1,6 +1,5 @@
 package com.mc.order.OrderService.service;
 
-import com.mc.order.OrderService.dataObjects.DeltaDto;
 import com.mc.order.OrderService.dataObjects.FilledItemDto;
 import com.mc.order.OrderService.dataObjects.ItemDto;
 import com.mc.order.OrderService.dataObjects.OrderDto;
@@ -13,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -21,21 +19,19 @@ import org.springframework.web.client.RestTemplate;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class OrderServiceImpl implements OrderService {
     private final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
     private OrdersRepository ordersRepository;
     private ItemsRepository itemsRepository;
+    private AmqpTemplate template;
     @Autowired
-    public OrderServiceImpl(OrdersRepository ordersRepository, ItemsRepository itemsRepository) {
+    public OrderServiceImpl(OrdersRepository ordersRepository, ItemsRepository itemsRepository, AmqpTemplate template) {
         this.ordersRepository = ordersRepository;
         this.itemsRepository = itemsRepository;
+        this.template = template;
     }
-
-    @Autowired
-    AmqpTemplate template;
 
     @Override
     public List<OrderDto> getOrders() {
@@ -58,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto addItemToOrder(String id, ItemDto itemDto) {
         OrderEntity orderEntity;
         if (id.toLowerCase().equals("null")) {
-            orderEntity = createOrder(itemDto.getUserName());
+            orderEntity = ordersRepository.save(createOrder(itemDto.getUserName()));
             logger.info("New order with id {} was created", orderEntity.getOrderId());
         } else {
             Long parsedId = Long.parseLong(id);
@@ -66,10 +62,9 @@ public class OrderServiceImpl implements OrderService {
         }
 
         RestTemplate restTemplate = new RestTemplate();
-        String fooResourceUrl
-                = "http://localhost:8081/items/";
+        String warehouseURL = "http://localhost:8081/items/";
         ResponseEntity<FilledItemDto> response
-                = restTemplate.getForEntity(fooResourceUrl + itemDto.getItemId(), FilledItemDto.class);
+                = restTemplate.getForEntity(warehouseURL + itemDto.getItemId(), FilledItemDto.class);
         FilledItemDto filledItemDto = response.getBody();
 
         assert filledItemDto != null;
@@ -82,8 +77,9 @@ public class OrderServiceImpl implements OrderService {
             orderEntity.setTotalCost(orderEntity.getTotalCost()
                     .add(filledItemDto.getPrice().multiply(new BigDecimal(itemDto.getAmount()))));
 
-            logger.info("Sending message");
-            template.convertAndSend("queue1", ""+itemDto.getItemId()+":-"+itemDto.getAmount());
+            logger.info("Sending message to warehouseQueue");
+            template.convertAndSend("warehouseQueue",
+                    ""+itemDto.getItemId()+":-"+itemDto.getAmount());
 
             logger.info("Item with id {} was added to order with id {}",
                     itemAdditionEntity.getItemId(),
@@ -97,15 +93,14 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto changeOrderStatus(Long id, OrderStatus status) {
         OrderEntity orderEntity = ordersRepository.findById(id).orElseThrow(RuntimeException::new);
         orderEntity.setStatus(status);
-        logger.info("Order status was changed to {}", status);
-        //todo updating warehouse's amount in case of rejection
+        logger.info("Order's status with id {} was changed to {}", id, status);
 
         if(status.equals(OrderStatus.CANCELED) || status.equals(OrderStatus.FAILED)) {
             List<ItemAdditionEntity> items = orderEntity.getItems();
             items.forEach(itemAdditionEntity -> {
                 logger.info("Send message with id = {} and delta = {}",
                         itemAdditionEntity.getItemId(), itemAdditionEntity.getAmount());
-                template.convertAndSend("queue1", ""+itemAdditionEntity.getItemId()
+                template.convertAndSend("warehouseQueue", ""+itemAdditionEntity.getItemId()
                         +":"+itemAdditionEntity.getAmount());
             });
         }

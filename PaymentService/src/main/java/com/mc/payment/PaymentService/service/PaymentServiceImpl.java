@@ -63,21 +63,18 @@ public class PaymentServiceImpl implements PaymentService {
                 throw new IllegalStateException("Unexpected value: " + userDetailsDto.getCardAuthorizationInfo());
         }
 
-        //todo change order's status
-
         RestTemplate restTemplate = new RestTemplate();
-        String fooResourceUrl
-                = "http://localhost:8082/orders/";
-        restTemplate.put(fooResourceUrl + id + "/status/" + orderStatus, OrderDto.class);
-        //OrderDto orderDto = response.getBody();
-        ResponseEntity<OrderDto> response = restTemplate.getForEntity(fooResourceUrl + id, OrderDto.class);
+        String orderURL = "http://localhost:8082/orders/";
+        restTemplate.put(orderURL + id + "/status/" + orderStatus, OrderDto.class);
+
+        ResponseEntity<OrderDto> response = restTemplate.getForEntity(orderURL + id, OrderDto.class);
         OrderDto orderDto = response.getBody();
 
-        TransactionEntity transactionEntity = new TransactionEntity(
+        TransactionEntity transactionEntity = transactionRepository.save(new TransactionEntity(
                 transactionStatus,
                 userDetailsDto.getUserName(),
                 id
-        );
+        ));
         logger.info("Created new transaction with id {}", transactionEntity.getId());
 
 //        return convertTransactionEntityToTransactionDto(transactionRepository.save(transactionEntity));
