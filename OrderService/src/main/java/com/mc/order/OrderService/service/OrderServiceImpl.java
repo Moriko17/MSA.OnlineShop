@@ -99,6 +99,16 @@ public class OrderServiceImpl implements OrderService {
         logger.info("Order status was changed to {}", status);
         //todo updating warehouse's amount in case of rejection
 
+        if(status.equals(OrderStatus.CANCELED) || status.equals(OrderStatus.FAILED)) {
+            List<ItemAdditionEntity> items = orderEntity.getItems();
+            items.forEach(itemAdditionEntity -> {
+                logger.info("Send message with id = {} and delta = {}",
+                        itemAdditionEntity.getItemId(), itemAdditionEntity.getAmount());
+                template.convertAndSend("queue1", ""+itemAdditionEntity.getItemId()
+                        +":"+itemAdditionEntity.getAmount());
+            });
+        }
+
         return convertOrderEntityToOrderDto(ordersRepository.save(orderEntity));
     }
 

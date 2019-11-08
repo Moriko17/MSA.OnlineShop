@@ -1,6 +1,5 @@
 package com.mc.warehouse.WarehouseService.rabbitmq;
 
-import com.mc.warehouse.WarehouseService.DataObjects.DeltaDto;
 import com.mc.warehouse.WarehouseService.service.WarehouseService;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageListener;
