@@ -77,7 +77,6 @@ public class PaymentServiceImpl implements PaymentService {
         ));
         logger.info("Created new transaction with id {}", transactionEntity.getId());
 
-//        return convertTransactionEntityToTransactionDto(transactionRepository.save(transactionEntity));
         return orderDto;
     }
 
