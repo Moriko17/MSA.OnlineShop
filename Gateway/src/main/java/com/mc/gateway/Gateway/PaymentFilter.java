@@ -27,7 +27,7 @@ public class PaymentFilter extends ZuulFilter {
 
     @Override
     public int filterOrder() {
-        return 1;
+        return FilterConstants.PRE_DECORATION_FILTER_ORDER + 1;
     }
 
     @Override
@@ -39,13 +39,27 @@ public class PaymentFilter extends ZuulFilter {
 
     @Override
     public Object run() throws ZuulException {
-        RequestContext context = RequestContext.getCurrentContext();
+        RequestContext ctx = RequestContext.getCurrentContext();
+        HttpServletRequest request = ctx.getRequest();
 
-        context.put(REQUEST_URI_KEY, "/api/payment");
+        try {
+            ctx.setRouteHost(new URL("http://localhost:8080/payment"));
+            ctx.put("proxy", "payment");
+            HttpServletRequest request2 = ctx.getRequest();
+            System.out.println(request2.getMethod());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
 
-        String requestUri = RequestContext.getCurrentContext().getRequest().getRequestURI();
-        System.out.println(requestUri);
-
+//        if ("YOUR_A_LOGIC".equals(header) ) {
+//            ctx.put("serviceId", "serviceA");
+//            //ctx.setRouteHost(new URL("http://Service_A_URL”));
+//        } else { // "YOUR_B_LOGIC"
+//            ctx.put("serviceId", "serviceB");
+//            //ctx.setRouteHost(new URL("http://Service_B_URL”));
+//        }
+//        log.info(String.format("%s request to %s", request.getMethod(),
+//        request.getRequestURL().toString()));
         return null;
-    }
+        }
 }

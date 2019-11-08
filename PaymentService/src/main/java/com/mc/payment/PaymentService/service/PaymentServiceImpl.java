@@ -64,7 +64,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         RestTemplate restTemplate = new RestTemplate();
-        String orderURL = "http://localhost:8082/orders/";
+        String orderURL = "http://localhost:8082/";
         restTemplate.put(orderURL + id + "/status/" + orderStatus, OrderDto.class);
 
         ResponseEntity<OrderDto> response = restTemplate.getForEntity(orderURL + id, OrderDto.class);
