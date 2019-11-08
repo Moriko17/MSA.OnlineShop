@@ -1,5 +1,7 @@
 package com.mc.payment.PaymentService.service;
 
+import com.mc.payment.PaymentService.dataObjects.OrderDto;
+import com.mc.payment.PaymentService.dataObjects.OrderStatus;
 import com.mc.payment.PaymentService.dataObjects.TransactionDto;
 import com.mc.payment.PaymentService.dataObjects.UserDetailsDto;
 import com.mc.payment.PaymentService.domain.TransactionEntity;
@@ -8,7 +10,9 @@ import com.mc.payment.PaymentService.repository.TransactionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,22 +45,34 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public TransactionDto performPayment(Long id, UserDetailsDto userDetailsDto) {
+    public OrderDto performPayment(Long id, UserDetailsDto userDetailsDto) {
         TransactionStatus transactionStatus;
+        OrderStatus orderStatus;
         switch (userDetailsDto.getCardAuthorizationInfo()) {
             case UNAUTHORIZED:
                 transactionStatus = TransactionStatus.FAILED;
                 logger.info("Payment for order with id {} was rejected", id);
+                orderStatus = OrderStatus.FAILED;
                 break;
             case AUTHORIZED:
                 transactionStatus = TransactionStatus.PAID;
                 logger.info("Payment for order with id {} was performed", id);
+                orderStatus = OrderStatus.PAID;
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + userDetailsDto.getCardAuthorizationInfo());
         }
 
         //todo change order's status
+
+        RestTemplate restTemplate = new RestTemplate();
+        String fooResourceUrl
+                = "http://localhost:8082/orders/";
+        restTemplate.put(fooResourceUrl + id + "/status/" + orderStatus, OrderDto.class);
+        //OrderDto orderDto = response.getBody();
+        ResponseEntity<OrderDto> response = restTemplate.getForEntity(fooResourceUrl + id, OrderDto.class);
+        OrderDto orderDto = response.getBody();
+
         TransactionEntity transactionEntity = new TransactionEntity(
                 transactionStatus,
                 userDetailsDto.getUserName(),
@@ -64,7 +80,8 @@ public class PaymentServiceImpl implements PaymentService {
         );
         logger.info("Created new transaction with id {}", transactionEntity.getId());
 
-        return convertTransactionEntityToTransactionDto(transactionRepository.save(transactionEntity));
+//        return convertTransactionEntityToTransactionDto(transactionRepository.save(transactionEntity));
+        return orderDto;
     }
 
     private TransactionDto convertTransactionEntityToTransactionDto(TransactionEntity transactionEntity) {

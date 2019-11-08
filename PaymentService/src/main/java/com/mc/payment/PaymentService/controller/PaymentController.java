@@ -1,5 +1,6 @@
 package com.mc.payment.PaymentService.controller;
 
+import com.mc.payment.PaymentService.dataObjects.OrderDto;
 import com.mc.payment.PaymentService.dataObjects.TransactionDto;
 import com.mc.payment.PaymentService.dataObjects.UserDetailsDto;
 import com.mc.payment.PaymentService.service.PaymentService;
@@ -28,7 +29,7 @@ public class PaymentController {
     }
 
     @PutMapping("/{orderId}/payment")
-    public TransactionDto performPayment(@PathVariable Long orderId, @RequestBody UserDetailsDto userDetailsDto) {
+    public OrderDto performPayment(@PathVariable Long orderId, @RequestBody UserDetailsDto userDetailsDto) {
         return paymentService.performPayment(orderId, userDetailsDto);
     }
 }

@@ -79,7 +79,8 @@ public class OrderServiceImpl implements OrderService {
 
             orderEntity.addToList(itemAdditionEntity);
             orderEntity.setTotalAmount(orderEntity.getTotalAmount() + itemDto.getAmount());
-            orderEntity.setTotalCost(orderEntity.getTotalCost().add(filledItemDto.getPrice()));
+            orderEntity.setTotalCost(orderEntity.getTotalCost()
+                    .add(filledItemDto.getPrice().multiply(new BigDecimal(itemDto.getAmount()))));
 
             logger.info("Sending message");
             template.convertAndSend("queue1", ""+itemDto.getItemId()+":-"+itemDto.getAmount());
