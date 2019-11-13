@@ -15,3 +15,8 @@ spring:
         temp:
           use_jdbc_metadata_defaults: false
     open-in-view: false
+
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka

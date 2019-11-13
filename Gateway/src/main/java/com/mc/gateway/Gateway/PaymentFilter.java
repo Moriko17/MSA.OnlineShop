@@ -32,14 +32,14 @@ public class PaymentFilter extends ZuulFilter {
     public Object run() throws ZuulException {
         RequestContext ctx = RequestContext.getCurrentContext();
 
-        try {
-            ctx.setRouteHost(new URL("http://localhost:8080/payment"));
-            ctx.put("proxy", "payment");
-            HttpServletRequest request2 = ctx.getRequest();
-            System.out.println(request2.getMethod());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            ctx.setRouteHost(new URL("http://localhost:8080/payment"));
+//            ctx.put("proxy", "payment");
+//            HttpServletRequest request2 = ctx.getRequest();
+//            System.out.println(request2.getMethod());
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
 
         return null;
         }
