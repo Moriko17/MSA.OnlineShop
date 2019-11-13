@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -67,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
                 = restTemplate.getForEntity(warehouseURL + itemDto.getItemId(), FilledItemDto.class);
         FilledItemDto filledItemDto = response.getBody();
 
-        assert filledItemDto != null;
+        Objects.requireNonNull(filledItemDto);
         if(filledItemDto.getAmount() >= itemDto.getAmount()) {
             ItemAdditionEntity itemAdditionEntity = convertItemDtoToItemAdditionEntity(itemDto);
             itemsRepository.save(itemAdditionEntity);
