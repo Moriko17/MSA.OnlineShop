@@ -3,8 +3,8 @@ package com.mc.warehouse.WarehouseService.controller;
 import com.mc.warehouse.WarehouseService.service.WarehouseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.mc.warehouse.api.Models.ItemDto;
-import com.mc.warehouse.api.Models.ItemCreationDto;
+import com.mc.warehouse.api.models.ItemDto;
+import com.mc.warehouse.api.models.ItemCreationDto;
 import java.util.List;
 
 @RestController

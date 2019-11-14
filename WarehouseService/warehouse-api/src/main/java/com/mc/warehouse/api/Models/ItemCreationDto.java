@@ -1,4 +1,4 @@
-package com.mc.warehouse.api.Models;
+package com.mc.warehouse.api.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

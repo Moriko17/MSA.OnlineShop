@@ -1,7 +1,7 @@
 package com.mc.warehouse.WarehouseService.service;
 
-import com.mc.warehouse.api.Models.ItemDto;
-import com.mc.warehouse.api.Models.ItemCreationDto;
+import com.mc.warehouse.api.models.ItemDto;
+import com.mc.warehouse.api.models.ItemCreationDto;
 
 import java.util.List;
 
