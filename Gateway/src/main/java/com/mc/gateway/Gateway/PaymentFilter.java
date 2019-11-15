@@ -23,9 +23,7 @@ public class PaymentFilter extends ZuulFilter {
 
     @Override
     public boolean shouldFilter() {
-        String requestUri = RequestContext.getCurrentContext().getRequest().getRequestURI();
-        String[] list = requestUri.split("/");
-        return list[list.length - 1].equals("payment");
+        return true;
     }
 
     @Override

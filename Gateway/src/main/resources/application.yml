@@ -15,4 +15,8 @@ eureka:
 zuul:
   routes:
     payment:
-      path: /orders/*/payment
+      path: /api/orders/*/payment
+    orders:
+      path: /api/orders/**
+    warehouse:
+      path: /api/warehouse/**

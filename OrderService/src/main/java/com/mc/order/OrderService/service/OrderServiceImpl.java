@@ -8,10 +8,14 @@ import com.mc.order.OrderService.domain.OrderEntity;
 import com.mc.order.OrderService.domain.OrderStatus;
 import com.mc.order.OrderService.repository.ItemsRepository;
 import com.mc.order.OrderService.repository.OrdersRepository;
+import com.mc.warehouse.api.client.WarehouseServiceClient;
+import com.mc.warehouse.api.models.ItemCreationDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -27,6 +31,12 @@ public class OrderServiceImpl implements OrderService {
     private OrdersRepository ordersRepository;
     private ItemsRepository itemsRepository;
     private AmqpTemplate template;
+//    private WarehouseServiceClient warehouseServiceClient;
+//
+//    @Autowired
+//    private WarehouseServiceClient warehouseServiceClient;
+
+
     @Autowired
     public OrderServiceImpl(OrdersRepository ordersRepository, ItemsRepository itemsRepository, AmqpTemplate template) {
         this.ordersRepository = ordersRepository;
@@ -67,6 +77,11 @@ public class OrderServiceImpl implements OrderService {
         ResponseEntity<FilledItemDto> response
                 = restTemplate.getForEntity(warehouseURL + itemDto.getItemId(), FilledItemDto.class);
         FilledItemDto filledItemDto = response.getBody();
+
+//        com.mc.warehouse.api.models.ItemDto filledItemDto;
+//        filledItemDto = warehouseServiceClient.getItemById(Long.parseLong(id));
+
+
 
         Objects.requireNonNull(filledItemDto);
         if(filledItemDto.getAmount() >= itemDto.getAmount()) {

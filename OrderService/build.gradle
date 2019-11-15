@@ -10,6 +10,7 @@ sourceCompatibility = '1.8'
 
 repositories {
 	mavenCentral()
+	mavenLocal()
 }
 
 dependencyManagement {
@@ -19,7 +20,9 @@ dependencyManagement {
 }
 
 dependencies {
+	compile 'com.mc.warehouse.api:warehouse-api:0.0.1-SNAPSHOT'
 	compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+	compile 'org.springframework.cloud:spring-cloud-starter-openfeign'
 	compileOnly 'org.springframework.boot:spring-boot-starter-data-jpa'
 	compileOnly 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.springframework.boot:spring-boot-starter-amqp'
