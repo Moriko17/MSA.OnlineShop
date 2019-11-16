@@ -2,7 +2,6 @@ package com.mc.warehouse.api.service;
 
 import com.mc.warehouse.api.models.ItemCreationDto;
 import com.mc.warehouse.api.models.ItemDto;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

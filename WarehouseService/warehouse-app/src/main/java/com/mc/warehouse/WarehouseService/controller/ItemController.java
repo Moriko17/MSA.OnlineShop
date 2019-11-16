@@ -22,7 +22,7 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ItemDto getItemById(@PathVariable Long id) {
+    public ItemDto getItemById(@PathVariable(value = "id") Long id) {
         return warehouseService.getItemById(id);
     }
 
@@ -32,7 +32,7 @@ public class ItemController {
     }
 
     @PutMapping("/{id}/addition/{delta}")
-    public ItemDto updateItemAmountById(@PathVariable Long id, @PathVariable Long delta) {
+    public ItemDto updateItemAmountById(@PathVariable(value = "id") Long id, @PathVariable(value = "delta") Long delta) {
         return warehouseService.updateItemAmountById(id, delta);
     }
 }
