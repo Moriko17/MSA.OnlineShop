@@ -1,4 +1,4 @@
-package com.mc.order.OrderService.dataObjects;
+package com.mc.order.api.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

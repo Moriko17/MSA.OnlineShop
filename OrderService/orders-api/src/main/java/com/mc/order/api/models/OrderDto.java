@@ -1,14 +1,15 @@
-package com.mc.order.OrderService.dataObjects;
+package com.mc.order.api.models;
 
-import com.mc.order.OrderService.domain.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class OrderDto {
     private Long id;
     private OrderStatus status;

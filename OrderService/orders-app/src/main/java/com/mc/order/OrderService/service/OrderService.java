@@ -1,8 +1,8 @@
 package com.mc.order.OrderService.service;
 
-import com.mc.order.OrderService.dataObjects.ItemDto;
-import com.mc.order.OrderService.dataObjects.OrderDto;
-import com.mc.order.OrderService.domain.OrderStatus;
+import com.mc.order.api.models.ItemDto;
+import com.mc.order.api.models.OrderDto;
+import com.mc.order.api.models.OrderStatus;
 
 import java.util.List;
 

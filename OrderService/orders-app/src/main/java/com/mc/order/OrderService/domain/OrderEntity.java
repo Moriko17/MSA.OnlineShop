@@ -1,5 +1,6 @@
 package com.mc.order.OrderService.domain;
 
+import com.mc.order.api.models.OrderStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

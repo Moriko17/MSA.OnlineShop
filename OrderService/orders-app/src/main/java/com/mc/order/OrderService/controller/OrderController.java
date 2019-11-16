@@ -1,9 +1,9 @@
 package com.mc.order.OrderService.controller;
 
-import com.mc.order.OrderService.dataObjects.ItemDto;
-import com.mc.order.OrderService.dataObjects.OrderDto;
-import com.mc.order.OrderService.domain.OrderStatus;
 import com.mc.order.OrderService.service.OrderService;
+import com.mc.order.api.models.ItemDto;
+import com.mc.order.api.models.OrderDto;
+import com.mc.order.api.models.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

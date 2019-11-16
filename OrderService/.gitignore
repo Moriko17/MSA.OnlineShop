@@ -1,5 +1,6 @@
-HELP.md
 .gradle
+**/.gradle
+**/build
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**
@@ -15,18 +16,13 @@ build/
 .sts4-cache
 
 ### IntelliJ IDEA ###
+**/.idea
 .idea
 *.iws
 *.iml
 *.ipr
 out/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-### VS Code ###
-.vscode/
+/.gradle/
+/.idea/
+**/build/

@@ -1,26 +1,22 @@
 package com.mc.order.OrderService.service;
 
-import com.mc.order.OrderService.dataObjects.FilledItemDto;
-import com.mc.order.OrderService.dataObjects.ItemDto;
-import com.mc.order.OrderService.dataObjects.OrderDto;
 import com.mc.order.OrderService.domain.ItemAdditionEntity;
 import com.mc.order.OrderService.domain.OrderEntity;
-import com.mc.order.OrderService.domain.OrderStatus;
 import com.mc.order.OrderService.repository.ItemsRepository;
 import com.mc.order.OrderService.repository.OrdersRepository;
+import com.mc.order.api.models.ItemDto;
+import com.mc.order.api.models.OrderDto;
+import com.mc.order.api.models.OrderStatus;
 import com.mc.warehouse.api.client.WarehouseServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -68,15 +64,8 @@ public class OrderServiceImpl implements OrderService {
             orderEntity = ordersRepository.findById(parsedId).orElseThrow(RuntimeException::new);
         }
 
-//        RestTemplate restTemplate = new RestTemplate();
-//        String warehouseURL = "http://localhost:8081/items/";
-//        ResponseEntity<FilledItemDto> response
-//                = restTemplate.getForEntity(warehouseURL + itemDto.getItemId(), FilledItemDto.class);
-//        FilledItemDto filledItemDto = response.getBody();
-
         com.mc.warehouse.api.models.ItemDto filledItemDto = warehouseServiceClient.getItemById(itemDto.getItemId());
 
-//        Objects.requireNonNull(filledItemDto);
         if(filledItemDto.getAmount() >= itemDto.getAmount()) {
             ItemAdditionEntity itemAdditionEntity = convertItemDtoToItemAdditionEntity(itemDto);
             itemsRepository.save(itemAdditionEntity);

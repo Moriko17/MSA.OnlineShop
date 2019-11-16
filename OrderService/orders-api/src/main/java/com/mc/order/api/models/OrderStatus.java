@@ -1,4 +1,4 @@
-package com.mc.order.OrderService.domain;
+package com.mc.order.api.models;
 
 public enum OrderStatus {
     COLLECTING,
