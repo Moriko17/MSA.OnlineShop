@@ -9,13 +9,10 @@ import com.mc.order.OrderService.domain.OrderStatus;
 import com.mc.order.OrderService.repository.ItemsRepository;
 import com.mc.order.OrderService.repository.OrdersRepository;
 import com.mc.warehouse.api.client.WarehouseServiceClient;
-import com.mc.warehouse.api.models.ItemCreationDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.openfeign.EnableFeignClients;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -31,17 +28,16 @@ public class OrderServiceImpl implements OrderService {
     private OrdersRepository ordersRepository;
     private ItemsRepository itemsRepository;
     private AmqpTemplate template;
-//    private WarehouseServiceClient warehouseServiceClient;
-//
-//    @Autowired
-//    private WarehouseServiceClient warehouseServiceClient;
+    private WarehouseServiceClient warehouseServiceClient;
 
 
     @Autowired
-    public OrderServiceImpl(OrdersRepository ordersRepository, ItemsRepository itemsRepository, AmqpTemplate template) {
+    public OrderServiceImpl(OrdersRepository ordersRepository, ItemsRepository itemsRepository,
+                            AmqpTemplate template, WarehouseServiceClient warehouseServiceClient) {
         this.ordersRepository = ordersRepository;
         this.itemsRepository = itemsRepository;
         this.template = template;
+        this.warehouseServiceClient = warehouseServiceClient;
     }
 
     @Override
@@ -72,18 +68,15 @@ public class OrderServiceImpl implements OrderService {
             orderEntity = ordersRepository.findById(parsedId).orElseThrow(RuntimeException::new);
         }
 
-        RestTemplate restTemplate = new RestTemplate();
-        String warehouseURL = "http://localhost:8081/items/";
-        ResponseEntity<FilledItemDto> response
-                = restTemplate.getForEntity(warehouseURL + itemDto.getItemId(), FilledItemDto.class);
-        FilledItemDto filledItemDto = response.getBody();
+//        RestTemplate restTemplate = new RestTemplate();
+//        String warehouseURL = "http://localhost:8081/items/";
+//        ResponseEntity<FilledItemDto> response
+//                = restTemplate.getForEntity(warehouseURL + itemDto.getItemId(), FilledItemDto.class);
+//        FilledItemDto filledItemDto = response.getBody();
 
-//        com.mc.warehouse.api.models.ItemDto filledItemDto;
-//        filledItemDto = warehouseServiceClient.getItemById(Long.parseLong(id));
+        com.mc.warehouse.api.models.ItemDto filledItemDto = warehouseServiceClient.getItemById(itemDto.getItemId());
 
-
-
-        Objects.requireNonNull(filledItemDto);
+//        Objects.requireNonNull(filledItemDto);
         if(filledItemDto.getAmount() >= itemDto.getAmount()) {
             ItemAdditionEntity itemAdditionEntity = convertItemDtoToItemAdditionEntity(itemDto);
             itemsRepository.save(itemAdditionEntity);
