@@ -1,11 +1,12 @@
-package com.mc.payment.PaymentService.dataObjects;
+package com.mc.payment.api.models;
 
-import com.mc.payment.PaymentService.domain.TransactionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @Getter
+@NoArgsConstructor
 public class TransactionDto {
     private Long id;
     private TransactionStatus status;

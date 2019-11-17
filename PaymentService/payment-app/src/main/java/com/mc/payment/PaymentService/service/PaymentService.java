@@ -1,8 +1,8 @@
 package com.mc.payment.PaymentService.service;
 
-import com.mc.payment.PaymentService.dataObjects.OrderDto;
-import com.mc.payment.PaymentService.dataObjects.TransactionDto;
-import com.mc.payment.PaymentService.dataObjects.UserDetailsDto;
+import com.mc.order.api.models.OrderDto;
+import com.mc.payment.api.models.TransactionDto;
+import com.mc.payment.api.models.UserDetailsDto;
 
 import java.util.List;
 

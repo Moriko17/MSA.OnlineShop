@@ -1,5 +1,6 @@
 package com.mc.payment.PaymentService.domain;
 
+import com.mc.payment.api.models.TransactionStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

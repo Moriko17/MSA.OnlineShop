@@ -1,4 +1,4 @@
-package com.mc.payment.PaymentService.domain;
+package com.mc.payment.api.models;
 
 public enum TransactionStatus {
     PAID,

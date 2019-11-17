@@ -1,4 +1,4 @@
-package com.mc.payment.PaymentService.dataObjects;
+package com.mc.payment.api.models;
 
 public enum CardAuthorizationInfo {
     UNAUTHORIZED,

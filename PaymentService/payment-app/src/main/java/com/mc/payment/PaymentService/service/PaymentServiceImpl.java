@@ -1,18 +1,14 @@
 package com.mc.payment.PaymentService.service;
 
-import com.mc.payment.PaymentService.dataObjects.OrderDto;
-import com.mc.payment.PaymentService.dataObjects.OrderStatus;
-import com.mc.payment.PaymentService.dataObjects.TransactionDto;
-import com.mc.payment.PaymentService.dataObjects.UserDetailsDto;
+import com.mc.order.api.client.OrderServiceClient;
+import com.mc.order.api.models.OrderDto;
 import com.mc.payment.PaymentService.domain.TransactionEntity;
-import com.mc.payment.PaymentService.domain.TransactionStatus;
 import com.mc.payment.PaymentService.repository.TransactionRepository;
+import com.mc.payment.api.models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +17,11 @@ import java.util.List;
 public class PaymentServiceImpl implements PaymentService {
     private final Logger logger = LoggerFactory.getLogger(PaymentServiceImpl.class);
     private TransactionRepository transactionRepository;
+    private OrderServiceClient orderServiceClient;
     @Autowired
-    public PaymentServiceImpl(TransactionRepository transactionRepository) {
+    public PaymentServiceImpl(TransactionRepository transactionRepository, OrderServiceClient orderServiceClient) {
         this.transactionRepository = transactionRepository;
+        this.orderServiceClient = orderServiceClient;
     }
 
     @Override
@@ -47,28 +45,33 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public OrderDto performPayment(Long id, UserDetailsDto userDetailsDto) {
         TransactionStatus transactionStatus;
-        OrderStatus orderStatus;
+        com.mc.order.api.models.OrderStatus orderStatus;
         switch (userDetailsDto.getCardAuthorizationInfo()) {
             case UNAUTHORIZED:
                 transactionStatus = TransactionStatus.FAILED;
                 logger.info("Payment for order with id {} was rejected", id);
-                orderStatus = OrderStatus.FAILED;
+                orderStatus = com.mc.order.api.models.OrderStatus.FAILED;
                 break;
             case AUTHORIZED:
                 transactionStatus = TransactionStatus.PAID;
                 logger.info("Payment for order with id {} was performed", id);
-                orderStatus = OrderStatus.PAID;
+                orderStatus = com.mc.order.api.models.OrderStatus.PAID;
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + userDetailsDto.getCardAuthorizationInfo());
         }
 
-        RestTemplate restTemplate = new RestTemplate();
-        String orderURL = "http://localhost:8082/";
-        restTemplate.put(orderURL + id + "/status/" + orderStatus, OrderDto.class);
+//        RestTemplate restTemplate = new RestTemplate();
+//        String orderURL = "http://localhost:8082/";
+//        restTemplate.put(orderURL + id + "/status/" + orderStatus, OrderDto.class);
+//
+//        ResponseEntity<OrderDto> response = restTemplate.getForEntity(orderURL + id, OrderDto.class);
+//        OrderDto orderDto = response.getBody();
 
-        ResponseEntity<OrderDto> response = restTemplate.getForEntity(orderURL + id, OrderDto.class);
-        OrderDto orderDto = response.getBody();
+        OrderDto orderDto = orderServiceClient.changeOrderStatus(id, orderStatus);
+
+
+
 
         TransactionEntity transactionEntity = transactionRepository.save(new TransactionEntity(
                 transactionStatus,

@@ -1,16 +1,15 @@
 package com.mc.payment.PaymentService.controller;
 
-import com.mc.payment.PaymentService.dataObjects.OrderDto;
-import com.mc.payment.PaymentService.dataObjects.TransactionDto;
-import com.mc.payment.PaymentService.dataObjects.UserDetailsDto;
+import com.mc.order.api.models.OrderDto;
 import com.mc.payment.PaymentService.service.PaymentService;
+import com.mc.payment.api.models.TransactionDto;
+import com.mc.payment.api.models.UserDetailsDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-//@RequestMapping("/payment")
 public class PaymentController {
     private PaymentService paymentService;
     @Autowired
