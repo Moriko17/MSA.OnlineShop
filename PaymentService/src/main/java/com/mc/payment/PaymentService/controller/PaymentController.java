@@ -18,15 +18,15 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
-//    @GetMapping
-//    public List<TransactionDto> getTransactions() {
-//        return paymentService.getTransactions();
-//    }
-//
-//    @GetMapping("/{id}")
-//    public TransactionDto getTransactionById(@PathVariable Long id) {
-//        return paymentService.getTransactionById(id);
-//    }
+    @GetMapping
+    public List<TransactionDto> getTransactions() {
+        return paymentService.getTransactions();
+    }
+
+    @GetMapping("/{id}")
+    public TransactionDto getTransactionById(@PathVariable Long id) {
+        return paymentService.getTransactionById(id);
+    }
 
     @PutMapping("/{orderId}/payment")
     public OrderDto performPayment(@PathVariable Long orderId, @RequestBody UserDetailsDto userDetailsDto) {
