@@ -18,6 +18,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final Logger logger = LoggerFactory.getLogger(PaymentServiceImpl.class);
     private TransactionRepository transactionRepository;
     private OrderServiceClient orderServiceClient;
+
     @Autowired
     public PaymentServiceImpl(TransactionRepository transactionRepository, OrderServiceClient orderServiceClient) {
         this.transactionRepository = transactionRepository;
@@ -61,17 +62,7 @@ public class PaymentServiceImpl implements PaymentService {
                 throw new IllegalStateException("Unexpected value: " + userDetailsDto.getCardAuthorizationInfo());
         }
 
-//        RestTemplate restTemplate = new RestTemplate();
-//        String orderURL = "http://localhost:8082/";
-//        restTemplate.put(orderURL + id + "/status/" + orderStatus, OrderDto.class);
-//
-//        ResponseEntity<OrderDto> response = restTemplate.getForEntity(orderURL + id, OrderDto.class);
-//        OrderDto orderDto = response.getBody();
-
         OrderDto orderDto = orderServiceClient.changeOrderStatus(id, orderStatus);
-
-
-
 
         TransactionEntity transactionEntity = transactionRepository.save(new TransactionEntity(
                 transactionStatus,

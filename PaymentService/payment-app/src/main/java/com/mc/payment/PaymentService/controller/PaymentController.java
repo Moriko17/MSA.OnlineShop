@@ -23,12 +23,13 @@ public class PaymentController {
     }
 
     @GetMapping("/{id}")
-    public TransactionDto getTransactionById(@PathVariable Long id) {
+    public TransactionDto getTransactionById(@PathVariable(value = "id") Long id) {
         return paymentService.getTransactionById(id);
     }
 
     @PutMapping("/{orderId}/payment")
-    public OrderDto performPayment(@PathVariable Long orderId, @RequestBody UserDetailsDto userDetailsDto) {
+    public OrderDto performPayment(@PathVariable(value = "orderId") Long orderId,
+                                   @RequestBody UserDetailsDto userDetailsDto) {
         return paymentService.performPayment(orderId, userDetailsDto);
     }
 }
