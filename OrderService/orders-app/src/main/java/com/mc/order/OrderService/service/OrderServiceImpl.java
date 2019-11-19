@@ -23,16 +23,16 @@ public class OrderServiceImpl implements OrderService {
     private final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
     private OrdersRepository ordersRepository;
     private ItemsRepository itemsRepository;
-    private AmqpTemplate template;
+    private AmqpTemplate amqpTemplate;
     private WarehouseServiceClient warehouseServiceClient;
 
 
     @Autowired
     public OrderServiceImpl(OrdersRepository ordersRepository, ItemsRepository itemsRepository,
-                            AmqpTemplate template, WarehouseServiceClient warehouseServiceClient) {
+                            AmqpTemplate amqpTemplate, WarehouseServiceClient warehouseServiceClient) {
         this.ordersRepository = ordersRepository;
         this.itemsRepository = itemsRepository;
-        this.template = template;
+        this.amqpTemplate = amqpTemplate;
         this.warehouseServiceClient = warehouseServiceClient;
     }
 
@@ -76,7 +76,8 @@ public class OrderServiceImpl implements OrderService {
                     .add(filledItemDto.getPrice().multiply(new BigDecimal(itemDto.getAmount()))));
 
             logger.info("Sending message to warehouseQueue");
-            template.convertAndSend("warehouseQueue",
+            //todo fix
+            amqpTemplate.convertAndSend("warehouseQueue",
                     ""+itemDto.getItemId()+":-"+itemDto.getAmount());
 
             logger.info("Item with id {} was added to order with id {}",
@@ -98,7 +99,8 @@ public class OrderServiceImpl implements OrderService {
             items.forEach(itemAdditionEntity -> {
                 logger.info("Send message with id = {} and delta = {}",
                         itemAdditionEntity.getItemId(), itemAdditionEntity.getAmount());
-                template.convertAndSend("warehouseQueue", ""+itemAdditionEntity.getItemId()
+                //todo fix
+                amqpTemplate.convertAndSend("warehouseQueue", ""+itemAdditionEntity.getItemId()
                         +":"+itemAdditionEntity.getAmount());
             });
         }

@@ -1,7 +1,6 @@
 package com.mc.order.OrderService.rabbitmq;
 
 import org.springframework.amqp.core.AmqpAdmin;
-import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -23,10 +22,5 @@ public class RabbitConfiguration {
     @Bean
     public RabbitTemplate rabbitTemplate() {
         return new RabbitTemplate(connectionFactory());
-    }
-
-    @Bean
-    public Queue warehouseQueue() {
-        return new Queue("warehouseQueue");
     }
 }

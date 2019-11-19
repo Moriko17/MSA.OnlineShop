@@ -24,17 +24,18 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public OrderDto getOrderById(@PathVariable Long id) {
+    public OrderDto getOrderById(@PathVariable(value = "id") Long id) {
         return orderService.getOrderById(id);
     }
 
     @PostMapping("/{id}/item")
-    public OrderDto addItemToOrder(@PathVariable String id, @RequestBody ItemDto itemDto) {
+    public OrderDto addItemToOrder(@PathVariable(value = "id") String id, @RequestBody ItemDto itemDto) {
         return orderService.addItemToOrder(id, itemDto);
     }
 
     @PutMapping("/{id}/status/{status}")
-    public OrderDto changeOrderStatus(@PathVariable Long id, @PathVariable OrderStatus status) {
+    public OrderDto changeOrderStatus(@PathVariable(value = "id") Long id,
+                                      @PathVariable(value = "status") OrderStatus status) {
         return orderService.changeOrderStatus(id, status);
     }
 }
