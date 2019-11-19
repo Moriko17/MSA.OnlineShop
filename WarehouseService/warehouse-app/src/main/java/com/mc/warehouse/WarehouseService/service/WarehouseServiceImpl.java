@@ -15,8 +15,8 @@ import java.util.List;
 @Service
 public class WarehouseServiceImpl implements WarehouseService {
     private final Logger logger = LoggerFactory.getLogger(WarehouseServiceImpl.class);
-
     private ItemRepository itemRepository;
+
     @Autowired
     public WarehouseServiceImpl(ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
