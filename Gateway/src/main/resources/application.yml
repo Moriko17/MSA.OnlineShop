@@ -1,0 +1,26 @@
+server:
+  port: 8762
+
+spring:
+  application:
+    name: zuul-gtw
+
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      default-zone: http://localhost:8761/eureka
+
+zuul:
+  routes:
+    payment1:
+      path: /api/orders/*/payment
+      serviceId: payment
+    payment2:
+      path: /api/payment/**
+      serviceId: payment
+    orders:
+      path: /api/orders/**
+    warehouse:
+      path: /api/warehouse/**

@@ -23,23 +23,21 @@ public class PaymentFilter extends ZuulFilter {
 
     @Override
     public boolean shouldFilter() {
-        String requestUri = RequestContext.getCurrentContext().getRequest().getRequestURI();
-        String[] list = requestUri.split("/");
-        return list[list.length - 1].equals("payment");
+        return true;
     }
 
     @Override
     public Object run() throws ZuulException {
         RequestContext ctx = RequestContext.getCurrentContext();
 
-        try {
-            ctx.setRouteHost(new URL("http://localhost:8080/payment"));
-            ctx.put("proxy", "payment");
-            HttpServletRequest request2 = ctx.getRequest();
-            System.out.println(request2.getMethod());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            ctx.setRouteHost(new URL("http://localhost:8080/payment"));
+//            ctx.put("proxy", "payment");
+//            HttpServletRequest request2 = ctx.getRequest();
+//            System.out.println(request2.getMethod());
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
 
         return null;
         }

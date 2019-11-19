@@ -1,1 +1,3 @@
 rootProject.name = 'OrderService'
+include 'orders-app'
+include 'orders-api'

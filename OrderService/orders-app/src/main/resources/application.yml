@@ -1,0 +1,21 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: orders
+  datasource:
+    url: jdbc:postgresql://localhost:5432/MCA.order
+    username: postgres
+    password: root
+  jpa:
+    generate-ddl: true
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka
