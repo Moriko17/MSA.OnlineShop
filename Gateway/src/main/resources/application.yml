@@ -9,8 +9,8 @@ eureka:
   client:
     fetch-registry: true
     register-with-eureka: true
-    service-url:
-      default-zone: http://localhost:8761/eureka
+    serviceUrl:
+      defaultZone: http://eureka:8761/eureka
 
 zuul:
   routes:
@@ -24,3 +24,16 @@ zuul:
       path: /api/orders/**
     warehouse:
       path: /api/warehouse/**
+      serviceId: warehouse
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000
+
+ribbon:
+  ConnectTimeout: 3000
+  ReadTimeout: 60000

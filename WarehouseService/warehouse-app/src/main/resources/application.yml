@@ -1,6 +1,5 @@
 server:
-  port: 8081
-  address: 0.0.0.0
+  port: 8763
 spring:
   application:
     name: warehouse
@@ -15,8 +14,11 @@ spring:
         temp:
           use_jdbc_metadata_defaults: false
     open-in-view: false
-
 eureka:
   client:
+    fetch-registry: true
+    register-with-eureka: true
     serviceUrl:
       defaultZone: http://eureka:8761/eureka/
+  instance:
+    prefer-ip-address: true
