@@ -1,0 +1,18 @@
+version: '2'
+services:
+  warehouse:
+    build: ./WarehouseService
+    ports:
+      - "8763:8763"
+  orders:
+    build: ./OrderService
+    ports:
+      - "8082:8082"
+  payment:
+    build: ./PaymentService
+    ports:
+      - "8080:8080"
+  zuul-gtw:
+    build: ./Gateway
+    ports:
+      - "8762:8762"
