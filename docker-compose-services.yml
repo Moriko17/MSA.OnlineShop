@@ -1,0 +1,6 @@
+version: '3'
+services:
+  warehouse:
+    build: ./WarehouseService
+    ports:
+      - "8081:8081"
