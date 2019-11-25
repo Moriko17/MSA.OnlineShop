@@ -11,17 +11,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RabbitConfiguration {
-    private WarehouseService warehouseService;
-    private Logger logger = LoggerFactory.getLogger(RabbitConfiguration.class);
-
-    @Autowired
-    public RabbitConfiguration(WarehouseService warehouseService) {
-        this.warehouseService = warehouseService;
-    }
+//    private WarehouseService warehouseService;
+//    private Logger logger = LoggerFactory.getLogger(RabbitConfiguration.class);
+//
+//    @Autowired
+//    public RabbitConfiguration(WarehouseService warehouseService) {
+//        this.warehouseService = warehouseService;
+//    }
 
     @Bean
     public ConnectionFactory connectionFactory() {
-        return new CachingConnectionFactory("rabbitmq");
+        return new CachingConnectionFactory("localhost");
     }
 
     @Bean
@@ -29,16 +29,16 @@ public class RabbitConfiguration {
         return new Queue("warehouseQueue");
     }
 
-    @Bean
-    public SimpleMessageListenerContainer messageListenerContainer() {
-        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory());
-        container.setQueueNames("warehouseQueue");
-        container.setMessageListener(message -> {
-            logger.info("Received from warehouseQueue : " + new String(message.getBody()));
-            String[] msg = new String(message.getBody()).split(":");
-            warehouseService.updateItemAmountById(Long.parseLong(msg[0]), Long.parseLong(msg[1]));
-        });
-        return container;
-    }
+//    @Bean
+//    public SimpleMessageListenerContainer messageListenerContainer() {
+//        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+//        container.setConnectionFactory(connectionFactory());
+//        container.setQueueNames("warehouseQueue");
+////        container.setMessageListener(message -> {
+////            logger.info("Received from warehouseQueue : " + new String(message.getBody()));
+////            String[] msg = new String(message.getBody()).split(":");
+////            warehouseService.updateItemAmountById(Long.parseLong(msg[0]), Long.parseLong(msg[1]));
+////        });
+//        return container;
+//    }
 }

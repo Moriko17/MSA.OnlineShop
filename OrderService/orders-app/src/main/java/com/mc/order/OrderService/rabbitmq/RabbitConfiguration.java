@@ -11,7 +11,7 @@ public class RabbitConfiguration {
 
     @Bean
     public ConnectionFactory connectionFactory() {
-        return new CachingConnectionFactory("rabbitmq");
+        return new CachingConnectionFactory("localhost");
     }
 
     @Bean

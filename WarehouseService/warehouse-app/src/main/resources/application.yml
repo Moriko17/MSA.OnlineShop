@@ -4,7 +4,7 @@ spring:
   application:
     name: warehouse
   datasource:
-    url: jdbc:postgresql://postgres:5432/MCA.warehouse
+    url: jdbc:postgresql://localhost:5432/MCA.warehouse
     username: postgres
     password: root
   jpa:
@@ -19,6 +19,6 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
     serviceUrl:
-      defaultZone: http://eureka:8761/eureka/
+      defaultZone: http://localhost:8761/eureka/
   instance:
     prefer-ip-address: true

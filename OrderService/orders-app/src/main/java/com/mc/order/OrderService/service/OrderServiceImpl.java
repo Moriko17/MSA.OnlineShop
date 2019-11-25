@@ -6,8 +6,9 @@ import com.mc.order.OrderService.repository.ItemsRepository;
 import com.mc.order.OrderService.repository.OrdersRepository;
 import com.mc.order.api.models.ItemDto;
 import com.mc.order.api.models.OrderDto;
-import com.mc.order.api.models.OrderStatus;
 import com.mc.warehouse.api.client.WarehouseServiceClient;
+import com.mc.order.api.models.OrderStatus;
+import com.mc.warehouse.api.models.WarehouseDelta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -75,10 +76,13 @@ public class OrderServiceImpl implements OrderService {
             orderEntity.setTotalCost(orderEntity.getTotalCost()
                     .add(filledItemDto.getPrice().multiply(new BigDecimal(itemDto.getAmount()))));
 
-            logger.info("Sending message to warehouseQueue");
             //todo fix
-            amqpTemplate.convertAndSend("warehouseQueue",
-                    ""+itemDto.getItemId()+":-"+itemDto.getAmount());
+//            amqpTemplate.convertAndSend("warehouseQueue",
+//                    ""+itemDto.getItemId()+":-"+itemDto.getAmount());
+            logger.info("Send message with id = {} and delta = {}",
+                    itemDto.getItemId(), itemDto.getAmount());
+            WarehouseDelta warehouseDelta = new WarehouseDelta(itemDto.getItemId(), (long) (itemDto.getAmount() * -1));
+            amqpTemplate.convertAndSend("warehouseQueue", warehouseDelta);
 
             logger.info("Item with id {} was added to order with id {}",
                     itemAdditionEntity.getItemId(),
@@ -100,8 +104,10 @@ public class OrderServiceImpl implements OrderService {
                 logger.info("Send message with id = {} and delta = {}",
                         itemAdditionEntity.getItemId(), itemAdditionEntity.getAmount());
                 //todo fix
-                amqpTemplate.convertAndSend("warehouseQueue", ""+itemAdditionEntity.getItemId()
-                        +":"+itemAdditionEntity.getAmount());
+//                amqpTemplate.convertAndSend("warehouseQueue", ""+itemAdditionEntity.getItemId()
+//                        +":"+itemAdditionEntity.getAmount());
+                WarehouseDelta warehouseDelta = new WarehouseDelta(itemAdditionEntity.getItemId(), Long.valueOf(itemAdditionEntity.getAmount()));
+                amqpTemplate.convertAndSend("warehouseQueue", warehouseDelta);
             });
         }
 
