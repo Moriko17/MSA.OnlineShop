@@ -76,9 +76,6 @@ public class OrderServiceImpl implements OrderService {
             orderEntity.setTotalCost(orderEntity.getTotalCost()
                     .add(filledItemDto.getPrice().multiply(new BigDecimal(itemDto.getAmount()))));
 
-            //todo fix
-//            amqpTemplate.convertAndSend("warehouseQueue",
-//                    ""+itemDto.getItemId()+":-"+itemDto.getAmount());
             logger.info("Send message with id = {} and delta = {}",
                     itemDto.getItemId(), itemDto.getAmount());
             WarehouseDelta warehouseDelta = new WarehouseDelta(itemDto.getItemId(), (long) (itemDto.getAmount() * -1));
@@ -103,9 +100,7 @@ public class OrderServiceImpl implements OrderService {
             items.forEach(itemAdditionEntity -> {
                 logger.info("Send message with id = {} and delta = {}",
                         itemAdditionEntity.getItemId(), itemAdditionEntity.getAmount());
-                //todo fix
-//                amqpTemplate.convertAndSend("warehouseQueue", ""+itemAdditionEntity.getItemId()
-//                        +":"+itemAdditionEntity.getAmount());
+
                 WarehouseDelta warehouseDelta = new WarehouseDelta(itemAdditionEntity.getItemId(), Long.valueOf(itemAdditionEntity.getAmount()));
                 amqpTemplate.convertAndSend("warehouseQueue", warehouseDelta);
             });

@@ -5,7 +5,7 @@ spring:
   application:
     name: orders
   datasource:
-    url: jdbc:postgresql://localhost:5432/MCA.order
+    url: jdbc:postgresql://postgres:5432/MCA.order
     username: postgres
     password: root
   jpa:
@@ -18,4 +18,4 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://eureka:8761/eureka

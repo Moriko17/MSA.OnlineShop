@@ -10,7 +10,7 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://eureka:8761/eureka
 
 zuul:
   routes:
@@ -22,6 +22,7 @@ zuul:
       serviceId: payment
     orders:
       path: /api/orders/**
+      serviceId: orders
     warehouse:
       path: /api/warehouse/**
       serviceId: warehouse
