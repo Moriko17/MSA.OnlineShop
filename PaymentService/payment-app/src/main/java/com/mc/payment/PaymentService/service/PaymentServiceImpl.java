@@ -5,6 +5,8 @@ import com.mc.order.api.models.OrderDto;
 import com.mc.payment.PaymentService.domain.TransactionEntity;
 import com.mc.payment.PaymentService.repository.TransactionRepository;
 import com.mc.payment.api.models.*;
+import com.mc.warehouse.api.client.WarehouseServiceClient;
+import com.mc.warehouse.api.models.ItemDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +20,14 @@ public class PaymentServiceImpl implements PaymentService {
     private final Logger logger = LoggerFactory.getLogger(PaymentServiceImpl.class);
     private TransactionRepository transactionRepository;
     private OrderServiceClient orderServiceClient;
+    private WarehouseServiceClient warehouseServiceClient;
 
     @Autowired
-    public PaymentServiceImpl(TransactionRepository transactionRepository, OrderServiceClient orderServiceClient) {
+    public PaymentServiceImpl(TransactionRepository transactionRepository,
+                              OrderServiceClient orderServiceClient, WarehouseServiceClient warehouseServiceClient) {
         this.transactionRepository = transactionRepository;
         this.orderServiceClient = orderServiceClient;
+        this.warehouseServiceClient = warehouseServiceClient;
     }
 
     @Override
@@ -72,6 +77,20 @@ public class PaymentServiceImpl implements PaymentService {
         logger.info("Created new transaction with id {}", transactionEntity.getId());
 
         return orderDto;
+    }
+
+    @Override
+    public Check getCheckByTransactionId(Long id) {
+        TransactionEntity transactionEntity = transactionRepository.findById(id).orElseThrow(RuntimeException::new);
+        OrderDto orderDto = orderServiceClient.getOrderById(transactionEntity.getOrder_id());
+        List<ItemInOrder> itemsInOrder = new ArrayList<>();
+        orderDto.getItems().forEach(item -> {
+            ItemDto itemDto = warehouseServiceClient.getItemById(item.getItemId());
+            ItemInOrder itemInOrder = new ItemInOrder(itemDto.getName(), itemDto.getPrice());
+            itemsInOrder.add(itemInOrder);
+        });
+
+        return new Check(id, transactionEntity.getOrder_id(), itemsInOrder);
     }
 
     private TransactionDto convertTransactionEntityToTransactionDto(TransactionEntity transactionEntity) {
