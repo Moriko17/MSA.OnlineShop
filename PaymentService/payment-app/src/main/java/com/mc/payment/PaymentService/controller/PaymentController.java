@@ -2,6 +2,7 @@ package com.mc.payment.PaymentService.controller;
 
 import com.mc.order.api.models.OrderDto;
 import com.mc.payment.PaymentService.service.PaymentService;
+import com.mc.payment.api.models.Check;
 import com.mc.payment.api.models.TransactionDto;
 import com.mc.payment.api.models.UserDetailsDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +32,10 @@ public class PaymentController {
     public OrderDto performPayment(@PathVariable(value = "orderId") Long orderId,
                                    @RequestBody UserDetailsDto userDetailsDto) {
         return paymentService.performPayment(orderId, userDetailsDto);
+    }
+
+    @GetMapping("/check/{id}")
+    public Check getCheckByTransactionId(@PathVariable(value = "id") Long id) {
+        return paymentService.getCheckByTransactionId(id);
     }
 }

@@ -9,7 +9,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @SpringBootApplication
 @EnableSwagger2
 @EnableEurekaClient
-@EnableFeignClients(basePackages = {"com.mc.order.api.client", "com.mc.payment.PaymentService"})
+@EnableFeignClients(basePackages = {"com.mc.warehouse.api.client",
+		"com.mc.order.api.client", "com.mc.payment.PaymentService"})
 public class PaymentServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(PaymentServiceApplication.class, args);

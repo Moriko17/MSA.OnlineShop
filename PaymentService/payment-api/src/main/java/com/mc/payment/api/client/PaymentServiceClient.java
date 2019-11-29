@@ -1,6 +1,7 @@
 package com.mc.payment.api.client;
 
 import com.mc.order.api.models.OrderDto;
+import com.mc.payment.api.models.Check;
 import com.mc.payment.api.models.TransactionDto;
 import com.mc.payment.api.models.UserDetailsDto;
 import com.mc.payment.api.service.PaymentServiceApi;
@@ -23,4 +24,7 @@ public interface PaymentServiceClient extends PaymentServiceApi {
     @PutMapping("/{orderId}/payment")
     OrderDto performPayment(@PathVariable(value = "orderId") Long orderId,
                             @RequestBody UserDetailsDto userDetailsDto);
+
+    @GetMapping("/check/{id}")
+    Check getCheckByTransactionId(@PathVariable(value = "id") Long id);
 }

@@ -22,6 +22,7 @@ zuul:
       serviceId: payment
     orders:
       path: /api/orders/**
+      serviceId: orders
     warehouse:
       path: /api/warehouse/**
       serviceId: warehouse

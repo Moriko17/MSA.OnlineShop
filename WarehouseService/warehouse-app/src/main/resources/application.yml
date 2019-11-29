@@ -20,5 +20,3 @@ eureka:
     register-with-eureka: true
     serviceUrl:
       defaultZone: http://eureka:8761/eureka/
-  instance:
-    prefer-ip-address: true
